@@ -1,10 +1,18 @@
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from models import ProductSchema
 from database import session, engine
 import database_models
 from sqlalchemy.orm import Session
 
 app = FastAPI()
+
+#because our ports are different backend is at 8000 and frontend is at 3000 so CORS has to be turned on 
+#CORS - Cross Origin Resource Sharing
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"] #can pass a list of origins
+)
 
 database_models.Base.metadata.create_all(bind=engine)
 
@@ -79,7 +87,7 @@ def get_all_products(db: Session = Depends(get_db)): #we injected dependencies h
 
 
 #fetch one product
-@app.get("/product/{id}") #we made it dynamic because here {id} is directly mapped with the product number 
+@app.get("/products/{id}") #we made it dynamic because here {id} is directly mapped with the product number 
 def get_products_by_id(id:int, db: Session = Depends(get_db)):
     db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
     if db_product:
@@ -110,7 +118,7 @@ def add_product(product : ProductSchema, db: Session = Depends(get_db)):  #Produ
 Here you are performing multiple steps:
 fetch the database --> check for the value --> put it there
 '''
-@app.put("/product")
+@app.put("/products")
 def update_product(id:int, product:ProductSchema, db: Session = Depends(get_db)):
     db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
     if db_product:
@@ -128,7 +136,7 @@ def update_product(id:int, product:ProductSchema, db: Session = Depends(get_db))
 
 
 #delete
-@app.delete("/product")
+@app.delete("/products")
 def delete_product(id:int, db: Session = Depends(get_db)):
     db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
     if db_product:
