@@ -1,4 +1,4 @@
-# ARiES - FastAPI Learning Project
+# FastAPI Learning Project
 
 A full-stack application demonstrating FastAPI backend development with a React frontend. This project was built as a learning exercise to understand modern backend systems, database integration, and full-stack communication.
 
