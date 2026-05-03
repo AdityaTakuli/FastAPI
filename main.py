@@ -119,6 +119,7 @@ def update_product(id:int, product:ProductSchema, db: Session = Depends(get_db))
         db_product.price = product.price
         db_product.quantity = product.quantity
         db.commit()
+        return "Product Updates succesfully"
     else:
         return "Error: Product can't get updated"
 
@@ -129,9 +130,10 @@ def update_product(id:int, product:ProductSchema, db: Session = Depends(get_db))
 #delete
 @app.delete("/product")
 def delete_product(id:int, db: Session = Depends(get_db)):
-    for i in range(len(products)):
-        if products[i].id == id:
-            del products[i] 
-            return "Product Deleted"
-        
-    return "Product not delected"
+    db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
+    if db_product:
+        db.delete(db_product) 
+        db.commit()
+        return "Product Deleted"
+    else:
+        return "Product not delected"
