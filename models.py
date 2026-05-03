@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Product(BaseModel):  #inheritance
+class ProductSchema(BaseModel):  #inheritance
     id: int
     name: str
     description: str
